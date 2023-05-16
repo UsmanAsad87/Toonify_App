@@ -46,7 +46,6 @@ dependencies:
   #dart3 incompatible
 #  share: ^0.6.5+2
 #  modal_progress_hud: ^0.1.3
-#  after_init: ^0.1.2
 
   #updated
   cupertino_icons: ^1.0.5
