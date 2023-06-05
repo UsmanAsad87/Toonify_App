@@ -57,6 +57,7 @@ class _MainScreenState extends State<MainScreen> {
         _inputImage = File(pickedFile.path);
       });
       await _postImage2(_inputImage!.path);
+      // await makeRequest(_inputImage!.path);
     } else {
       print('No image selected');
     }
@@ -127,43 +128,70 @@ class _MainScreenState extends State<MainScreen> {
   //     _uploadError = err.toString();
   //   }
   // }
+
+  // Future<void> makeRequest(String imagePath) async {
+  //   FormData data = FormData();
+  //   var file = await MultipartFile.fromFile(imagePath,
+  //       filename: imagePath, contentType: MediaType('image', imagePath));
+  //   data.files.add(MapEntry(
+  //     'image',
+  //     file,
+  //   ));
+  //   data.fields.add(MapEntry('type', 'pixar_plus'));
+  //
+  //   Dio dio = Dio();
+  //   dio.options.headers = {
+  //     'X-RapidAPI-Key': '2a66f880fbmshb69b2b96da283ddp130adfjsn49849e4c2f8c',
+  //     'X-RapidAPI-Host': 'cartoon-yourself.p.rapidapi.com',
+  //   };
+  //
+  //   try {
+  //     Response response = await dio.post(
+  //       'https://cartoon-yourself.p.rapidapi.com/facebody/api/portrait-animation/portrait-animation',
+  //       data: data,
+  //     );
+  //     print(response.data);
+  //   } catch (error) {
+  //     print(error);
+  //   }
+  // }
+
   Future<void> _postImage2(String imagePath) async {
     try {
-      final url = 'https://toonme-api.p.rapidapi.com/upload/';
-      Dio dio = Dio();
-      dio.options.headers = {
-        'X-RapidAPI-Key': '7b1c31808fmsh1451f2d3d47a90ap1dd6e8jsncb21467221c4',
-        'X-RapidAPI-Host': 'toonme-api.p.rapidapi.com',
-        "accept": "application/json",
-      };
-
-      var formData = FormData();
-
-      var file = await MultipartFile.fromFile(imagePath,
-          filename: imagePath, contentType: MediaType('image', imagePath));
-
-      formData.files.add(MapEntry('image', file));
-
-      FormData data = FormData.fromMap({'file1': ''});
       setState(() {
         _showSpinner = true;
       });
-      print('heret3y');
-      _apiResponse = await dio.post(
-        url,
-        data: data,
-      );
-      print(
-          _apiResponse!.data.toString()
-      );
-      _outputImageUrl = json.decode(_apiResponse.toString())['output_url'];
+      FormData data = FormData();
+      var file = await MultipartFile.fromFile(imagePath,
+          filename: imagePath, contentType: MediaType('image', imagePath));
+      data.files.add(MapEntry(
+        'image',
+        file,
+      ));
+      data.fields.add(MapEntry('type', 'pixar_plus'));
+
+      Dio dio = Dio();
+      dio.options.headers = {
+        'X-RapidAPI-Key': '2fc2ee2706msh2f3db690f6c4086p1843a2jsn9ac35630b0e6',
+        'X-RapidAPI-Host': 'cartoon-yourself.p.rapidapi.com',
+      };
+
+        _apiResponse = await dio.post(
+          'https://cartoon-yourself.p.rapidapi.com/facebody/api/portrait-animation/portrait-animation',
+          data: data,
+        );
+        // print(response.data);
+      print(_apiResponse!.data.toString());
+      print( "IMG URL:"+_apiResponse!.data['data']['image_url'].toString());
+      _outputImageUrl = _apiResponse!.data['data']['image_url'].toString();
+
 
       _outputImageUrlResponse = await http.get(
         Uri.parse(_outputImageUrl!),
       );
 
       setState(() {
-        _outputImage =Image.network(
+        _outputImage = Image.network(
           _outputImageUrl!,
           loadingBuilder: (BuildContext context, Widget? child,
               ImageChunkEvent? loadingProgress) {
@@ -193,11 +221,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _showSnackBar(BuildContext context, String text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(text),
-        )
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(text),
+    ));
   }
 
   Future<bool> _saveImage() async {
@@ -229,7 +255,6 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
@@ -247,128 +272,128 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: Color(0xff01A0C7),
       ),
       body: Stack(
+        children: [
+          Stack(
             children: [
-              Stack(
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Text(
+                      'Upload your full face photo for the best result',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15.0,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        CustomImageBox(
+                          width: _screenWidth / 2.1,
+                          height: _screenHeight / 3,
+                          image: _inputImage != null
+                              ? Image.file(_inputImage!)
+                              : Container(),
+                        ),
+                        CustomImageBox(
+                          width: _screenWidth / 2.1,
+                          height: _screenHeight / 3,
+                          image: _outputImage != null
+                              ? _outputImage!
+                              : (_uploadError == null
+                                  ? Container()
+                                  : Center(
+                                      child: Container(
+                                        child: Text(
+                                          'Some Error Ocurred!',
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                    )),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        CustomRoundButton(
+                          iconData: Icons.image,
+                          color: Colors.green,
+                          onPressed: () =>
+                              _pickImage(image_picker.ImageSource.gallery),
+                        ),
+                        CustomRoundButton(
+                          iconData: Icons.camera,
+                          color: Colors.blue,
+                          onPressed: () =>
+                              _pickImage(image_picker.ImageSource.camera),
+                        ),
+                        _isImageProcessed
+                            ? Builder(
+                                builder: (context) {
+                                  return CustomRoundButton(
+                                      iconData: Icons.save_alt,
+                                      color: Colors.red,
+                                      onPressed: () async {
+                                        bool result = await _saveImage();
+                                        if (result) {
+                                          _showSnackBar(context,
+                                              'Image is saved to gallery');
+                                        } else {
+                                          _showSnackBar(context,
+                                              'Error occured in saving the image');
+                                        }
+                                      });
+                                },
+                              )
+                            : Container(),
+                        // _isImageProcessed
+                        //     ? CustomRoundButton(
+                        //         iconData: Icons.share,
+                        //         color: Colors.yellow,
+                        //         onPressed: () => _shareImage(),
+                        //       )
+                        //     : Container(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              _showSpinner
+                  ? Center(
                       child: Text(
-                        'Upload your full face photo for the best result',
+                        'Processing ...',
                         style: TextStyle(
                           color: Colors.red,
                           fontWeight: FontWeight.w700,
-                          fontSize: 15.0,
+                          fontSize: 20.0,
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CustomImageBox(
-                            width: _screenWidth / 2.1,
-                            height: _screenHeight / 3,
-                            image: _inputImage != null
-                                ? Image.file(_inputImage!)
-                                : Container(),
-                          ),
-                          CustomImageBox(
-                            width: _screenWidth / 2.1,
-                            height: _screenHeight / 3,
-                            image: _outputImage != null
-                                ? _outputImage!
-                                : (_uploadError == null
-                                    ? Container()
-                                    : Center(
-                                        child: Container(
-                                          child: Text(
-                                            'Not a valid Input Image',
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                      )),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          CustomRoundButton(
-                            iconData: Icons.image,
-                            color: Colors.green,
-                            onPressed: () =>
-                                _pickImage(image_picker.ImageSource.gallery),
-                          ),
-                          CustomRoundButton(
-                            iconData: Icons.camera,
-                            color: Colors.blue,
-                            onPressed: () =>
-                                _pickImage(image_picker.ImageSource.camera),
-                          ),
-                          _isImageProcessed
-                              ? Builder(
-                                  builder: (context) {
-                                    return CustomRoundButton(
-                                        iconData: Icons.save_alt,
-                                        color: Colors.red,
-                                        onPressed: () async {
-                                          bool result = await _saveImage();
-                                          if (result) {
-                                            _showSnackBar(context,
-                                                'Image is saved to gallery');
-                                          } else {
-                                            _showSnackBar(context,
-                                                'Error occured in saving the image');
-                                          }
-                                        });
-                                  },
-                                )
-                              : Container(),
-                          _isImageProcessed
-                              ? CustomRoundButton(
-                                  iconData: Icons.share,
-                                  color: Colors.yellow,
-                                  onPressed: () => _shareImage(),
-                                )
-                              : Container(),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                _showSpinner
-                    ? Center(
-                        child: Text(
-                          'Processing ...',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 20.0,
-                          ),
-                        ),
-                      )
-                    : Container(),
-              ],
-        ),
-              if (_showSpinner)
-                Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
+                    )
+                  : Container(),
             ],
           ),
+          if (_showSpinner)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
