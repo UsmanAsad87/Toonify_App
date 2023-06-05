@@ -12,6 +12,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 import 'package:toonify_app/components/custom_round_button.dart';
+import 'package:toonify_app/constant.dart';
 
 import '../components/custom_image_box.dart';
 
@@ -63,99 +64,6 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  // Post image to Toonify api
-  // Future<void> _postImage(String imagePath) async {
-  //   try {
-  //     var dioRequest = dio.Dio();
-  //     var YOUR_API_KEY='6cac79f58amsh0a1813426e5b73cp1';
-  //     dioRequest.options.baseUrl = 'https://api.deepai.org/api/toonify';
-  //     dioRequest.options.headers = {
-  //       'api-key': YOUR_API_KEY,
-  //     };
-  //     print("here");
-  //
-  //     var formData = new dio.FormData();
-  //
-  //     var file = await dio.MultipartFile.fromFile(imagePath,
-  //         filename: imagePath, contentType: MediaType('image', imagePath));
-  //
-  //     formData.files.add(MapEntry('image', file));
-  //
-  //     setState(() {
-  //       _showSpinner = true;
-  //     });
-  //     print('heret3y');
-  //     _apiResponse = await dioRequest.post(
-  //       dioRequest.options.baseUrl,
-  //       data: formData,
-  //       options: Options(responseType: ResponseType.json),
-  //     );
-  //     print(
-  //       _apiResponse
-  //     );
-  //     _outputImageUrl = json.decode(_apiResponse.toString())['output_url'];
-  //
-  //     _outputImageUrlResponse = await http.get(
-  //       Uri.parse(_outputImageUrl!),
-  //     );
-  //
-  //     setState(() {
-  //       _outputImage =Image.network(
-  //         _outputImageUrl!,
-  //         loadingBuilder: (BuildContext context, Widget? child,
-  //             ImageChunkEvent? loadingProgress) {
-  //           if (loadingProgress == null) {
-  //             return child!;
-  //           } else if (loadingProgress.cumulativeBytesLoaded ==
-  //               loadingProgress.expectedTotalBytes) {
-  //             Future.delayed(Duration.zero, () async {
-  //               setState(() {
-  //                 _isImageProcessed = true;
-  //                 _showSpinner = false;
-  //                 _uploadError = null;
-  //               });
-  //             });
-  //           }
-  //           return Container();
-  //         },
-  //       );
-  //     });
-  //   } catch (err) {
-  //     setState(() {
-  //       _showSpinner = false;
-  //     });
-  //     print('ERROR  $err');
-  //     _uploadError = err.toString();
-  //   }
-  // }
-
-  // Future<void> makeRequest(String imagePath) async {
-  //   FormData data = FormData();
-  //   var file = await MultipartFile.fromFile(imagePath,
-  //       filename: imagePath, contentType: MediaType('image', imagePath));
-  //   data.files.add(MapEntry(
-  //     'image',
-  //     file,
-  //   ));
-  //   data.fields.add(MapEntry('type', 'pixar_plus'));
-  //
-  //   Dio dio = Dio();
-  //   dio.options.headers = {
-  //     'X-RapidAPI-Key': '2a66f880fbmshb69b2b96da283ddp130adfjsn49849e4c2f8c',
-  //     'X-RapidAPI-Host': 'cartoon-yourself.p.rapidapi.com',
-  //   };
-  //
-  //   try {
-  //     Response response = await dio.post(
-  //       'https://cartoon-yourself.p.rapidapi.com/facebody/api/portrait-animation/portrait-animation',
-  //       data: data,
-  //     );
-  //     print(response.data);
-  //   } catch (error) {
-  //     print(error);
-  //   }
-  // }
-
   Future<void> _postImage2(String imagePath) async {
     try {
       setState(() {
@@ -172,7 +80,7 @@ class _MainScreenState extends State<MainScreen> {
 
       Dio dio = Dio();
       dio.options.headers = {
-        'X-RapidAPI-Key': '2fc2ee2706msh2f3db690f6c4086p1843a2jsn9ac35630b0e6',
+        'X-RapidAPI-Key': API_KEY,
         'X-RapidAPI-Host': 'cartoon-yourself.p.rapidapi.com',
       };
 
