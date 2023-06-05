@@ -43,9 +43,9 @@ Future<void> checkAndSaveApiKey() async {
     // API key is not saved, save it to shared preferences
     String newApiKey = API_KEY; // Replace with your API key
     await prefs.setString('api_key', newApiKey);
-    // print('API key saved to shared preferences: $newApiKey');
+    print('API key saved to shared preferences: $newApiKey');
   } else {
     // API key is already saved in shared preferences
-    // print('API key already exists in shared preferences: $apiKey');
+    print('API key already exists in shared preferences: $apiKey');
   }
 }

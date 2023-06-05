@@ -73,7 +73,7 @@ class _MainScreenState extends State<MainScreen> {
       });
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? apiKey = prefs.getString('api_key');
-      // print(apiKey);
+      print(apiKey);
       FormData data = FormData();
       var file = await MultipartFile.fromFile(imagePath,
           filename: imagePath, contentType: MediaType('image', imagePath));
@@ -94,7 +94,7 @@ class _MainScreenState extends State<MainScreen> {
           data: data,
         );
         // print(response.data);
-      // print(_apiResponse!.data.toString());
+      print(_apiResponse!.data.toString());
       // print( "IMG URL:"+_apiResponse!.data['data']['image_url'].toString());
       _outputImageUrl = _apiResponse!.data['data']['image_url'].toString();
 
