@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    <application
-        android:label="toonify_app"
+        android:label="Cartoon Yourself"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

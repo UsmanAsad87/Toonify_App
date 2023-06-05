@@ -11,8 +11,10 @@ import 'package:image/image.dart' as Img;
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toonify_app/components/custom_round_button.dart';
 import 'package:toonify_app/constant.dart';
+import 'package:toonify_app/screens/updateAPI.dart';
 
 import '../components/custom_image_box.dart';
 
@@ -69,6 +71,9 @@ class _MainScreenState extends State<MainScreen> {
       setState(() {
         _showSpinner = true;
       });
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? apiKey = prefs.getString('api_key');
+      // print(apiKey);
       FormData data = FormData();
       var file = await MultipartFile.fromFile(imagePath,
           filename: imagePath, contentType: MediaType('image', imagePath));
@@ -80,7 +85,7 @@ class _MainScreenState extends State<MainScreen> {
 
       Dio dio = Dio();
       dio.options.headers = {
-        'X-RapidAPI-Key': API_KEY,
+        'X-RapidAPI-Key': apiKey,
         'X-RapidAPI-Host': 'cartoon-yourself.p.rapidapi.com',
       };
 
@@ -89,8 +94,8 @@ class _MainScreenState extends State<MainScreen> {
           data: data,
         );
         // print(response.data);
-      print(_apiResponse!.data.toString());
-      print( "IMG URL:"+_apiResponse!.data['data']['image_url'].toString());
+      // print(_apiResponse!.data.toString());
+      // print( "IMG URL:"+_apiResponse!.data['data']['image_url'].toString());
       _outputImageUrl = _apiResponse!.data['data']['image_url'].toString();
 
 
@@ -152,16 +157,16 @@ class _MainScreenState extends State<MainScreen> {
     return false;
   }
 
-  void _shareImage() async {
-    bool result = await _saveImage();
-
-    if (result) {
-      //Todo 1: share image
-      // Share.shareFiles([_savedLocation!], text: 'Toonify your selfie !!!');
-    } else {
-      print('Error: could not get the image');
-    }
-  }
+  // void _shareImage() async {
+  //   bool result = await _saveImage();
+  //
+  //   if (result) {
+  //     //Todo 1: share image
+  //     // Share.shareFiles([_savedLocation!], text: 'Toonify your selfie !!!');
+  //   } else {
+  //     print('Error: could not get the image');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +176,7 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Toonify Your Selfie',
+          'Cartoonify Yourself',
           style: TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 30,
@@ -248,6 +253,11 @@ class _MainScreenState extends State<MainScreen> {
                           onPressed: () =>
                               _pickImage(image_picker.ImageSource.camera),
                         ),
+                        CustomRoundButton(
+                          iconData: Icons.refresh,
+                          color: Colors.red,
+                          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>const UpdateAPIScreen())),
+                        ),
                         _isImageProcessed
                             ? Builder(
                                 builder: (context) {
@@ -266,7 +276,9 @@ class _MainScreenState extends State<MainScreen> {
                                       });
                                 },
                               )
-                            : Container(),
+                            : SizedBox.shrink(),
+
+
                         // _isImageProcessed
                         //     ? CustomRoundButton(
                         //         iconData: Icons.share,
