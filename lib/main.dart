@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toonify_app/constant.dart';
+import 'package:toonify_app/screens/splash_screen.dart';
 import 'screens/main_screen.dart';
 
 void main() {
@@ -22,11 +23,11 @@ class ToonifyApp extends StatelessWidget {
         splitScreenMode: true,
         builder: (context, child) {
           return MaterialApp(
-            home: MainScreen(),
+            home: SplashScreen(),
             debugShowCheckedModeBanner: false,
           );
         },
-        child: MainScreen()// WelcomeScreen(),
+        child: SplashScreen()// WelcomeScreen(),
 
     );
   }
